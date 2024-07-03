@@ -1,31 +1,29 @@
 # Import the required modules
 import speech_recognition as sr
-import pyttsx3
 import pywhatkit
 import datetime
+import playsound
 import wikipedia
 import pyjokes
+from gtts import gTTS
 
 # Create a speech recognizer object
 listener = sr.Recognizer()
 
+
 # Create a text to speech engine object
-engine = pyttsx3.init()
 
 # Define a function to make the assistant speak
 def talk(text):
-    # Set the voice to female
-    voices = engine.getProperty("voices")
-    engine.setProperty("voice", voices[1].id)
-    # Say the text
-    engine.say(text)
-    # Run and wait until the speech is finished
-    engine.runAndWait()
+    engine = gTTS(text)
+    engine.save("Sample.mp3")
+    playsound.playsound('Sample.mp3')
+
 
 # Define a function to take voice commands from the user
 def take_command():
+    # Use the default microphone as the audio source
     try:
-        # Use the default microphone as the audio source
         with sr.Microphone() as source:
             # Listen for the user's voice and adjust for ambient noise
             print("Listening...")
@@ -39,11 +37,11 @@ def take_command():
                 # Remove the assistant's name from the command
                 command = command.replace("VoiceVibe", "")
                 print(command)
-    except:
-        # Handle any exceptions and return an empty string
-        print("Sorry, I could not hear you")
-        command = ""
+    except Exception as e:
+        print("excerption:", e)
+        command = ''
     return command
+
 
 # Define a function to run the assistant
 def run_VoiceVibe():
@@ -111,10 +109,13 @@ def run_VoiceVibe():
         # Handle any unknown commands and ask for another command
         talk("Sorry, I did not understand that. Please say it again.")
     return True
-# Greet the user and introduce the assistant
-talk("Hello, I'm VoiceVibe, your voice assistant. How can I help you today?")
 
-# Create a loop to run the assistant until the user says stop
-running = True
-while running:
-    running = run_VoiceVibe()
+
+if __name__ == '__main__':
+    # Greet the user and introduce the assistant
+    talk("Hello, I'm VoiceVibe, your voice assistant. How can I help you today?")
+
+    # Create a loop to run the assistant until the user says stop
+    running = True
+    while running:
+        running = run_VoiceVibe()
