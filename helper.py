@@ -2,7 +2,14 @@ import cv2
 import face_recognition
 import numpy as np
 import ollama
+
 import main
+
+with open('prompt.md') as file:
+    prompt = file.read()
+
+with open('request.md') as file:
+    prompt_req = file.read()
 
 
 def findEncoding(img):
@@ -35,9 +42,12 @@ while True:
             cv2.rectangle(img, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
             cv2.putText(img, 'name', (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 2)
             # print("found")
-            g = ollama.generate("gemma:2b", "wish the user!")
-            print(g)
-
+            g = ollama.generate("gemma:2b", prompt)
+            main.talk(g['response'])
+            while True:
+                command = main.take_command()
+                g = ollama.generate("gemma:2b", prompt_req.replace("<input>", command))
+                main.talk(g['response'])
     # cv2.imshow('Webcam', img)
     k = cv2.waitKey(1) & 0xFF
     if k == ord("q"):

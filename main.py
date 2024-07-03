@@ -5,7 +5,11 @@ import datetime
 import playsound
 import wikipedia
 import pyjokes
-from gtts import gTTS
+
+from TTS.api import TTS
+
+# Init TTS
+tts = TTS("tts_models/en/ljspeech/tacotron2-DDC_ph")
 
 # Create a speech recognizer object
 listener = sr.Recognizer()
@@ -15,9 +19,8 @@ listener = sr.Recognizer()
 
 # Define a function to make the assistant speak
 def talk(text):
-    engine = gTTS(text)
-    engine.save("Sample.mp3")
-    playsound.playsound('Sample.mp3')
+    tts.tts_to_file(text=text, file_path="output.wav")
+    playsound.playsound('output.wav')
 
 
 # Define a function to take voice commands from the user
@@ -32,11 +35,8 @@ def take_command():
             # Recognize the speech using Google Speech Recognition API
             command = listener.recognize_google(voice)
             # Convert the command to lowercase and check if it contains the assistant's name
+            print(command)
             command = command.lower()
-            if "VoiceVibe" in command:
-                # Remove the assistant's name from the command
-                command = command.replace("VoiceVibe", "")
-                print(command)
     except Exception as e:
         print("excerption:", e)
         command = ''

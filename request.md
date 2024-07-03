@@ -5,4 +5,5 @@
 - make it more creative and interactive
 - not more than a sentence!
 - don't generate emoji
-# output
+- user have said this '<input>'
+# Response
